@@ -13,7 +13,8 @@ def compute_elo_rankings(data):
     players=list(pd.Series(list(data.Winner)+list(data.Loser)).value_counts().index)
     elo=pd.Series(np.ones(len(players))*1500,index=players)
     ranking_elo=[(1500,1500)]
-    for i in range(1,len(data)):
+    print("{} matches will be computed".format(len(data)))
+    for i in range(1,len(data)): # len(data)
         w=data.iloc[i-1,:].Winner
         l=data.iloc[i-1,:].Loser
         elow=elo[w]

@@ -26,8 +26,9 @@ def features_past_generation(features_creation_function,
     The output of the functions is twice as long as "indices".
     (these features introduce many hyperparameters to be tuned...)
     """
+
     matches_outcomes=[]
-    for i,match_indice in enumerate(indices):
+    for i,match_indice in enumerate(indices): # indices
         match=data.iloc[match_indice,:]
         past_matches=data[(data.Date<match.Date)&(data.Date>=match.Date-datetime.timedelta(days=days))]
         match_features_outcome_1=features_creation_function(1,match,past_matches)

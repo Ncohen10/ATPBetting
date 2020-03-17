@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from datetime import datetime,timedelta
+import datetime
 
 from past_features import *
 from elo_features import *
@@ -19,7 +19,10 @@ from utilities import *
 # We consider only the odds of Bet365 and Pinnacle.
 
 import glob
+
+
 filenames=list(glob.glob("../Data/20*.xls*"))
+# filenames = list(glob.glob("../Data/testData.xlsx"))
 l = [pd.read_excel(filename,encoding='latin-1') for filename in filenames]
 no_b365=[i for i,d in enumerate(l) if "B365W" not in l[i].columns]
 no_pi=[i for i,d in enumerate(l) if "PSW" not in l[i].columns]
@@ -61,26 +64,26 @@ data.to_csv("../Generated Data/atp_data.csv",index=False)
 ### We'll add some features to the dataset
 
 data=pd.read_csv("../Generated Data/atp_data.csv")
-data.Date = data.Date.apply(lambda x:datetime.strptime(x, '%Y-%m-%d'))
+data.Date = data.Date.apply(lambda x:datetime.datetime.strptime(x, '%Y-%m-%d'))
 
 
 ######################### The period that interests us #########################
 
-beg = datetime(2008,1,1) 
+beg = datetime.datetime(2008,1,1)
 end = data.Date.iloc[-1]
 indices = data[(data.Date>beg)&(data.Date<=end)].index
 
 ################### Building of some features based on the past ################
 
-features_player  = features_past_generation(features_player_creation,5,"playerft5",data,indices)
-features_duo     = features_past_generation(features_duo_creation,150,"duoft",data,indices)
-features_general = features_past_generation(features_general_creation,150,"generalft",data,indices)
-features_recent  = features_past_generation(features_recent_creation,150,"recentft",data,indices)
-#dump(player_features,"player_features")
-#dump(duo_features,"duo_features")
-#dump(general_features,"general_features")
-#dump(recent_features,"recent_features")
-features_player=load("player_features")
+player_features  = features_past_generation(features_player_creation,5,"playerft5",data,indices)
+duo_features     = features_past_generation(features_duo_creation,150,"duoft",data,indices)
+general_features = features_past_generation(features_general_creation,150,"generalft",data,indices)
+recent_features  = features_past_generation(features_recent_creation,150,"recentft",data,indices)
+dump(player_features,"player_features")
+dump(duo_features,"duo_features")
+dump(general_features,"general_features")
+dump(recent_features,"recent_features")
+features_player=load("player_features") # TODO - This line causing: FileNotFoundError: [Errno 2] No such file or directory: 'player_features.p'
 features_duo=load("duo_features")
 features_general=load("general_features")
 features_recent=load("recent_features")
@@ -148,7 +151,7 @@ features.to_csv("../Generated Data/atp_data_features.csv",index=False)
 ######################### Confidence computing for each match ############################
 features=pd.read_csv("../Generated Data/atp_data_features.csv")
 
-start_date=datetime(2013,1,1) #first day of testing set
+start_date=datetime.datetime(2013,1,1) #first day of testing set
 test_beginning_match=data[data.Date==start_date].index[0] #id of the first match of the testing set
 span_matches=len(data)-test_beginning_match+1
 duration_val_matches=300
@@ -241,3 +244,6 @@ ax.plot(lens,linewidth=2,marker="o")
 plt.suptitle("Betting on sections of 100 matches")
 ax.set_xlabel("From 2013 to 2018")
 ax.set_ylabel("For each section, number of matches we bet on")
+
+#TODO - elo_features : L16
+#TODO - main.py : 31
