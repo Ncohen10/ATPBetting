@@ -118,7 +118,7 @@ elo_1.index = range(0,2*len(elo_1),2)
 features_elo_ranking = pd.concat([elo_1,elo_2]).sort_index(kind='merge')
 
 # Categorical features
-features_onehot = pd.DataFrame(np.repeat(features_onehot.values,2, axis=0),columns=features_onehot.columns)
+# features_onehot = pd.DataFrame(np.repeat(features_onehot.values,2, axis=0),columns=features_onehot.columns)
 
 # odds feature
 features_odds = pd.Series(odds.values.flatten(),name="odds")
@@ -128,7 +128,6 @@ features_odds = pd.DataFrame(features_odds)
 # You can remove some features to see the effect on the ROI
 features = pd.concat([features_odds,
                   features_elo_ranking,
-                  features_onehot,
                   features_player,
                   features_duo,
                   features_general,
